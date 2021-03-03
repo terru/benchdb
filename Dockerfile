@@ -1,8 +1,8 @@
 FROM node:alpine
 
-RUN mkdir -p /usr/src/bechdb && chown -R node:node /usr/src/bechdb
+RUN mkdir -p /usr/src/benchdb && chown -R node:node /usr/src/benchdb
 
-WORKDIR /usr/src/bechdb
+WORKDIR /usr/src/benchdb
 
 COPY package.json package-lock.json ./
 

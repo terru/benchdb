@@ -6,6 +6,7 @@ services:
     image: benchdb
     environment:
       - MONGODB_URL=mongodb://mongodb:27017/benchdb
+      - MOSQUITTO_HOST=tcp://127.0.0.1:1883
     ports:
       - '3000:3000'
     depends_on:
