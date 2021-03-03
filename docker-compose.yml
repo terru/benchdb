@@ -1,0 +1,51 @@
+version: '3'
+
+services:
+  benchdb:
+    build: .
+    image: benchdb
+    environment:
+      - MONGODB_URL=mongodb://mongodb:27017/benchdb
+    ports:
+      - '3000:3000'
+    depends_on:
+      - mongodb
+      - mosquitto
+    volumes:
+      - .:/usr/src/benchdb
+    networks:
+      - node-network
+
+  # Database engines
+  mongodb:
+    image: mongo:4.2.1-bionic
+    ports:
+      - '27017:27017'
+    volumes:
+      - dbdata:/data/db
+    networks:
+      - node-network
+
+  # Iot services
+  mosquitto:
+    image: eclipse-mosquitto
+    hostname: mosquitto
+    container_name: mosquitto
+    expose:
+      - '1883'
+      - '9001'
+    ports:
+      - '1883:1883'
+      - '9001:9001'
+    volumes:
+      # map configuration file to the versioned one
+      - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
+    networks:
+      - node-network
+
+volumes:
+  dbdata:
+
+networks:
+  node-network:
+    driver: bridge

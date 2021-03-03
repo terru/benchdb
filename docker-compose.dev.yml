@@ -1,0 +1,6 @@
+version: '3'
+
+services:
+  benchdb:
+    container_name: benchdb-dev
+    command: npm run dev
