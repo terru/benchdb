@@ -12,7 +12,7 @@ console.log("Using this config", config.mosquitto.host);
 // When passing async functions as event listeners, make sure to have a try catch block
 
 const doStuff = async () => {
-  console.log('Starting');
+  console.log('Starting here with eslint');
   try {
     await client.publish('wow/so/cool', 'It works!');
     // This line doesn't run until the server responds to the publish
