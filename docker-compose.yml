@@ -16,7 +16,6 @@ services:
       - .:/usr/src/benchdb
     networks:
       - node-network
-      - default
 
   # Database engines
   mongodb:
@@ -44,7 +43,6 @@ services:
       - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
     networks:
       - node-network
-      - default
 
 volumes:
   dbdata:
@@ -52,7 +50,3 @@ volumes:
 networks:
   node-network:
     driver: bridge
-  default:
-    ipam:
-      config:
-        - subnet: 172.18.1.0/24
