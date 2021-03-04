@@ -47,7 +47,7 @@ Run docker using the [npm commands](#commands)
 - **Testing**: unit and integration tests using [Jest](https://jestjs.io)
 - **Environment variables**: using [dotenv](https://github.com/motdotla/dotenv) and [cross-env](https://github.com/kentcdodds/cross-env#readme)
 - **Docker support** : see [docker](#docker) section
-- **Git hooks**: with [husky4](https://github.com/typicode/husky) and [lint-staged](https://github.com/okonet/lint-staged)
+- **Git hooks**: with [husky](https://github.com/typicode/husky) and [lint-staged](https://github.com/okonet/lint-staged)
 - **Linting**: with [ESLint](https://eslint.org) and [Prettier](https://prettier.io)
 
 ## Docker
