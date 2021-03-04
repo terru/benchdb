@@ -6,7 +6,7 @@ services:
     image: benchdb
     environment:
       - MONGODB_URL=mongodb://mongodb:27017/benchdb
-      - MOSQUITTO_HOST=tcp://127.0.0.1:1883
+      - MOSQUITTO_HOST=tcp://mosquitto:1883
     ports:
       - '3000:3000'
     depends_on:
@@ -16,6 +16,7 @@ services:
       - .:/usr/src/benchdb
     networks:
       - node-network
+      - default
 
   # Database engines
   mongodb:
@@ -43,6 +44,7 @@ services:
       - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
     networks:
       - node-network
+      - default
 
 volumes:
   dbdata:
@@ -50,3 +52,7 @@ volumes:
 networks:
   node-network:
     driver: bridge
+  default:
+    ipam:
+      config:
+        - subnet: 172.18.1.0/24
