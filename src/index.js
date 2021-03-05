@@ -1,29 +1,9 @@
 const mongoose = require('mongoose');
-const MQTT = require('async-mqtt');
 const config = require('./config/config');
+const logger = require('./config/logger');
+const subscriber = require('./subscriber/subscriber');
+const sender = require('./senders/sender.factory');
 
 mongoose.connect(config.mongoose.url, config.mongoose.options).then(() => {
-  console.log('Connected to MongoDB using a docker!');
+  logger.info('Connected to MongoDB using a docker service!');
 });
-
-const client = MQTT.connect(config.mosquitto.host);
-console.log("Using this config", config.mosquitto.host);
-
-// When passing async functions as event listeners, make sure to have a try catch block
-
-const doStuff = async () => {
-  console.log('Starting here with eslint');
-  try {
-    await client.publish('wow/so/cool', 'It works!');
-    // This line doesn't run until the server responds to the publish
-    await client.end();
-    // This line doesn't run until the client has disconnected without error
-    console.log('Done');
-  } catch (e) {
-    // Do something about it!
-    console.log(e.stack);
-    process.exit();
-  }
-};
-
-client.on('connect', doStuff);

@@ -50,7 +50,8 @@
     "cross-env": "^7.0.3",
     "dotenv": "^8.2.0",
     "joi": "^17.4.0",
-    "mongoose": "^5.11.18"
+    "mongoose": "^5.11.18",
+    "winston": "^3.3.3"
   },
   "husky": {
     "hooks": {
