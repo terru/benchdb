@@ -1,24 +1,51 @@
-const MQTT = require('async-mqtt');
-const config = require('../config/config');
+/** Sender factory */
 const logger = require('../config/logger');
+const Sender = require('./sender');
 
-const client = MQTT.connect(config.mosquitto.host);
-
-// When passing async functions as event listeners, make sure to have a try catch block
-
-const doStuff = async () => {
-  logger.info('Starting senders...');
-  try {
-    await client.publish('wow/so/cool', 'SENDING MY INFORMATION....');
-    // This line doesn't run until the server responds to the publish
-    await client.end();
-    // This line doesn't run until the client has disconnected without error
-    logger.info('Done');
-  } catch (e) {
-    // Do something about it!
-    logger.error(e.stack);
-    process.exit();
+class SenderFactory {
+  constructor(props) {
+    this.props = props;
+    if (typeof SenderFactory.instance === 'object') {
+      return SenderFactory.instance;
+    }
+    SenderFactory.instance = this;
+    return this;
   }
-};
 
-client.on('connect', doStuff);
+  create(number, channel, topic, innerData) {
+    logger.info(`Attempting to create ${number} senders`);
+    this.senders = [];
+    try {
+      const senderProps = {
+        channel,
+        topic,
+        innerData,
+      };
+      for (let i = 0; i < number; i += 1) {
+        this.senders.push(new Sender(senderProps));
+      }
+      return this.senders;
+    } catch (e) {
+      logger.error('Error at creating a Sender');
+      logger.error(this.instance);
+      logger.error(e.stack);
+      process.exit();
+    }
+  }
+
+  run(number) {
+    logger.info(`Attempting to run this number: ${number} of senders`);
+    try {
+      for (let i = 0; i < number; i += 1) {
+        this.senders[i].run();
+      }
+    } catch (e) {
+      logger.error('Error at running a Sender');
+      logger.error(this.instance);
+      logger.error(e.stack);
+      process.exit();
+    }
+  }
+}
+
+module.exports = SenderFactory;
