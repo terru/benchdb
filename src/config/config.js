@@ -10,6 +10,8 @@ const envVarsSchema = Joi.object()
     PORT: Joi.number().default(3000),
     MONGODB_URL: Joi.string().required().description('Mongo DB url'),
     MOSQUITTO_HOST: Joi.string().required().description('The host url for the mosquitto broker'),
+    MOSQUITTO_CHANNEL: Joi.string().required().description('The shared channel to simulate the communication'),
+    SENDERS_AMOUNT: Joi.number().default(10),
   })
   .unknown();
 
@@ -32,5 +34,9 @@ module.exports = {
   },
   mosquitto: {
     host: envVars.MOSQUITTO_HOST,
+    channel: envVars.MOSQUITTO_CHANNEL,
+  },
+  bench: {
+    sendersAmount: envVars.SENDERS_AMOUNT,
   },
 };

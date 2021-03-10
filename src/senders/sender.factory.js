@@ -1,4 +1,5 @@
-/** Sender factory */
+/** Sender factory is a Singleton to build several senders at the same time */
+const _ = require('lodash');
 const logger = require('../config/logger');
 const Sender = require('./sender');
 
@@ -12,16 +13,15 @@ class SenderFactory {
     return this;
   }
 
-  create(number, channel, topic, innerData) {
+  createSenders(number, channel) {
     logger.info(`Attempting to create ${number} senders`);
     this.senders = [];
     try {
       const senderProps = {
         channel,
-        topic,
-        innerData,
       };
       for (let i = 0; i < number; i += 1) {
+        senderProps.id = i;
         this.senders.push(new Sender(senderProps));
       }
       return this.senders;
@@ -33,12 +33,12 @@ class SenderFactory {
     }
   }
 
-  run(number) {
-    logger.info(`Attempting to run this number: ${number} of senders`);
+  runSenders() {
+    logger.info(`Attempting to run the senders`);
     try {
-      for (let i = 0; i < number; i += 1) {
-        this.senders[i].run();
-      }
+      _.each(this.senders, (sender) => {
+        sender.run();
+      });
     } catch (e) {
       logger.error('Error at running a Sender');
       logger.error(this.instance);

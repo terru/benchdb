@@ -32,7 +32,6 @@ Run docker using the [npm commands](#commands)
 - [Commands](#commands)
 - [Environment Variables](#environment-variables)
 - [Project Structure](#project-structure)
-- [Error Handling](#error-handling)
 - [Validation](#validation)
 - [Logging](#logging)
 - [Linting](#linting)
@@ -139,31 +138,6 @@ src\
  |--utils\          # Utility classes and functions
  |--index.js        # Tool entry point
 ```
-## Error Handling
-
-The tool has a centralized error handling mechanism.
-
-Procedures should try to catch the errors and forward them to the error handling middleware (by calling `next(error)`). For convenience, you can also wrap the controller inside the catchAsync utility wrapper, which forwards the error.
-
-```javascript
-const catchAsync = require('../utils/catchAsync');
-
-const controller = catchAsync(async (req, res) => {
-  // this error will be forwarded to the error handling middleware
-  throw new Error('Something wrong happened');
-});
-```
-
-When running in development mode, the error response also contains the error stack.
-
-The app has a utility ApiError class to which you can attach a response code and a message, and then throw it from anywhere (catchAsync will catch it).
-
-For example:
-
-```javascript
-//TODO add error handling example
-```
-
 ## Validation
 
 Env data is validated using [Joi](https://joi.dev/). Check the [documentation](https://joi.dev/api/) for more details on how to write Joi validation schemas.
