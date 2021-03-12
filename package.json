@@ -12,7 +12,8 @@
     "prettier": "prettier --check **/*.js",
     "prettier:fix": "prettier --write **/*.js",
     "docker:dev": "docker-compose -f docker-compose.yml -f docker-compose.dev.yml up",
-    "docker:clean": "docker-compose down --rmi all"
+    "docker:clean": "docker-compose down --rmi all",
+    "docker:mongo": "docker-compose -f docker-compose-mongo.yml -f docker-compose.dev.yml up  --remove-orphans"
   },
   "repository": {
     "type": "git",

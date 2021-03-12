@@ -181,6 +181,7 @@ To maintain a consistent coding style across different IDEs, the project contain
 - [hagopj13/node-express-boilerplate](https://github.com/hagopj13/node-express-boilerplate)
 - [FIWARE/tutorials.IoT-over-MQTT](https://github.com/FIWARE/tutorials.IoT-over-MQTT)
 - [danielfsousa/express-rest-es2017-boilerplate](https://github.com/danielfsousa/express-rest-es2017-boilerplate)
+- [asoorm/docker-compose-mongo-replicaset.yml](https://gist.github.com/asoorm)
 
 ## License
 

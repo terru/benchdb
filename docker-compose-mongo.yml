@@ -1,0 +1,132 @@
+version: '3'
+services:
+  benchdb:
+    build: .
+    image: benchdb
+    environment:
+      - MONGODB_URL=mongodb://mongodb:27017/benchdb
+      - MOSQUITTO_HOST=tcp://mosquitto:1883
+    ports:
+      - '3000:3000'
+    depends_on:
+      - dbengine
+      - mosquitto
+    volumes:
+      - .:/usr/src/benchdb
+    networks:
+      - node-network
+
+  # Iot services
+  mosquitto:
+    image: eclipse-mosquitto
+    hostname: mosquitto
+    container_name: mosquitto
+    expose:
+      - '1883'
+      - '9001'
+    ports:
+      - '1883:1883'
+      - '9001:9001'
+    volumes:
+      # map configuration file to the versioned one
+      - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
+    networks:
+      - node-network
+
+  # Database engines (Mongo Replica Set version)
+  dbengine:
+    container_name: mongo-setup
+    image: mongo
+    restart: on-failure
+    networks:
+      - node-network
+    volumes:
+      - ./mongo:/scripts
+    entrypoint: ['/scripts/setup.sh'] # Make sure this file exists (see below for the setup.sh)
+    depends_on:
+      - mongo1
+      - mongo2
+      - mongo3
+
+  mongo1:
+    hostname: mongo1
+    container_name: localmongo1
+    image: mongo
+    expose:
+      - 27017
+    ports:
+      - 27017:27017
+    restart: always
+    networks:
+      - node-network
+    entrypoint:
+      [
+        '/usr/bin/mongod',
+        '--bind_ip_all',
+        '--replSet',
+        'rs0',
+        '--journal',
+        '--dbpath',
+        '/data/db',
+        '--enableMajorityReadConcern',
+        'false',
+      ]
+    volumes:
+      - ./dbdata/mongo/data1/db:/data/db # Volume to persist data
+      - ./dbdata/mongo/data1/configdb:/data/configdb
+  mongo2:
+    hostname: mongo2
+    container_name: localmongo2
+    image: mongo
+    expose:
+      - 27017
+    ports:
+      - 27018:27017
+    restart: always
+    networks:
+      - node-network
+    entrypoint:
+      [
+        '/usr/bin/mongod',
+        '--bind_ip_all',
+        '--replSet',
+        'rs0',
+        '--journal',
+        '--dbpath',
+        '/data/db',
+        '--enableMajorityReadConcern',
+        'false',
+      ]
+    volumes:
+      - ./dbdata/mongo/data2/db:/data/db # Note the data2, it must be different to the original set.
+      - ./dbdata/mongo/data2/configdb:/data/configdb
+  mongo3:
+    hostname: mongo3
+    container_name: localmongo3
+    image: mongo
+    expose:
+      - 27017
+    ports:
+      - 27019:27017
+    restart: always
+    networks:
+      - node-network
+    entrypoint:
+      [
+        '/usr/bin/mongod',
+        '--bind_ip_all',
+        '--replSet',
+        'rs0',
+        '--journal',
+        '--dbpath',
+        '/data/db',
+        '--enableMajorityReadConcern',
+        'false',
+      ]
+    volumes:
+      - ./dbdata/mongo/data3/db:/data/db
+      - ./dbdata/mongo/data3/configdb:/data/configdb
+
+networks:
+  node-network:
+    driver: bridge

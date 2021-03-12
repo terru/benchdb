@@ -77,3 +77,6 @@ typings/
 
 # DynamoDB Local files
 .dynamodb/
+
+#Database volumes for docker
+dbdata/

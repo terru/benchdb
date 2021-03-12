@@ -2,10 +2,7 @@ const logger = require('./config/logger');
 const SenderFactory = require('./senders/sender.factory');
 const Subscriber = require('./subscriber/subscriber');
 const config = require('./config/config');
-
-/* mongoose.connect(config.mongoose.url, config.mongoose.options).then(() => {
-  logger.info('Connected to MongoDB using a docker service!');
-}); */
+const mongoose = require('./config/mongoose'); // eslint-disable-line
 
 logger.info('ATTEMPTING TO PERFORM A NEW BENCH...');
 const { sendersAmount } = config.bench;
@@ -25,4 +22,10 @@ Factory.runSenders();
   - Add profiling method to Subscriber
   - Transform Subscriber in a interface, add MongooseSubscriber
   - Add other subscribers
+*/
+
+/* TODO ENGINES
+ - add env variable to define the engine to be used and up
+ - check env variable to connect with the db
+ - resolve mongo/script chown issue
 */
