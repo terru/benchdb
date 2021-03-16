@@ -1,31 +1,43 @@
 const logger = require('./config/logger');
 const SenderFactory = require('./senders/sender.factory');
-const Subscriber = require('./subscriber/subscriber');
+const MongoSubscriber = require('./subscriber/mongoSubscriber');
 const config = require('./config/config');
-const mongoose = require('./config/mongoose'); // eslint-disable-line
 
 logger.info('ATTEMPTING TO PERFORM A NEW BENCH...');
 const { sendersAmount } = config.bench;
 const { channel } = config.mosquitto;
-const subscriber = new Subscriber({ channel });
-subscriber.init();
+const subscriber = new MongoSubscriber({ channel });
 
-const Factory = new SenderFactory();
+subscriber
+  .init()
+  .then(() => {
+    logger.info('Creating senders...');
+    const Factory = new SenderFactory();
 
-Factory.createSenders(sendersAmount, channel);
+    Factory.createSenders(sendersAmount, channel);
 
-Factory.runSenders();
+    Factory.runSenders();
+  })
+  .catch((e) => {
+    logger.error('Error in mongo conection, please restart....');
+    logger.error(e.stack);
+    process.exit();
+  });
 
 /* TODO LIST
-  - CHECK PM2 or another lib to create 1 process from sensor
-    -Generate a barrier inside the factory, create the process, run them, finish;
-  - Add profiling method to Subscriber
-  - Transform Subscriber in a interface, add MongooseSubscriber
-  - Add other subscribers
+  - Add profiling method to Subscriber -> WIP
+    - add Retrieving time, after saving;
+    - REsearch output hidding
+    - check _onExit TODO
+    - think a way of moving _onExit to abstract class;
+  - Add another subscribers kind
+  - Check some statisticks to show
+  - Add colors to console; generate a file with the output;
 */
 
 /* TODO ENGINES
+ - resolve mongo/script chown issue
  - add env variable to define the engine to be used and up
  - check env variable to connect with the db
- - resolve mongo/script chown issue
+ - copy env.example
 */
