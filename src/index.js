@@ -25,11 +25,14 @@ subscriber
   });
 
 /* TODO LIST
+  - Solve situation when starting mongo; maybe a delay in benchdb?
   - Add profiling method to Subscriber -> WIP
     - add Retrieving time, after saving;
-    - REsearch output hidding
     - check _onExit TODO
+    - elapsed time should be calculated before saving all the data;
+    - profiler could estimate media, avg and retrieval
     - think a way of moving _onExit to abstract class;
+    - think a way of moving profiling required methods
   - Add another subscribers kind
   - Check some statisticks to show
   - Add colors to console; generate a file with the output;

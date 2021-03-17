@@ -11,7 +11,6 @@ class Sender {
 
   async run() {
     try {
-      logger.info('Running sender...');
       const sentData = {
         id: this.id,
         datum: Math.random(0, 1).toString(),

@@ -11,6 +11,7 @@ class MongoSubscriber extends Subscriber {
     super();
     this.channel = props.channel;
     this.startTime = 0;
+    this.attemps = 10;
   }
 
   // private methods
@@ -87,9 +88,7 @@ class MongoSubscriber extends Subscriber {
     }
   }
 
-  // public methods
-  async init() {
-    // TODO replace with env data;
+  async mongooseConnect() {
     try {
       await mongoose.connect('mongodb://mongo1:27017,mongo2:27018,mongo3:27019/iot_data', {
         useNewUrlParser: true,
@@ -97,18 +96,28 @@ class MongoSubscriber extends Subscriber {
         useCreateIndex: true,
         replicaSet: 'rs0', // We use this from the entrypoint in the docker-compose file
       });
-      logger.info('Connected to MongoDB using a docker service and a replica Set');
-      logger.info('Trying to get a MQTT connection...');
-      this.client = MQTT.connect(config.mosquitto.host);
-      this.client.on('connect', this._onConnect.bind(this));
-      this.client.on('message', this._onMessage.bind(this));
-      logger.info('Starting to count elapsed time...');
-      this.startTime = new Date().getTime();
     } catch (e) {
-      logger.error('ERROR');
-      logger.error(e);
-      throw e; // move error to the caller;
+      if (this.attemps > 0) {
+        this.attemps -= 1;
+        await setTimeout(this.init.bind(this), 3000);
+      } else {
+        logger.error('Max connectiona attemps');
+        throw e;
+      }
     }
+  }
+
+  // public methods
+  async init() {
+    const self = this;
+    await this.mongooseConnect();
+    logger.info('Connected to MongoDB using a docker service and a replica Set');
+    logger.info('Trying to get a MQTT connection...');
+    self.client = MQTT.connect(config.mosquitto.host);
+    self.client.on('connect', self._onConnect.bind(self));
+    self.client.on('message', self._onMessage.bind(self));
+    logger.info('Starting to count elapsed time...');
+    self.startTime = new Date().getTime();
   }
 }
 

@@ -3,6 +3,7 @@ services:
   benchdb:
     build: .
     image: benchdb
+    restart: on-failure
     environment:
       - MONGODB_URL=mongodb://mongodb:27017/benchdb
       - MOSQUITTO_HOST=tcp://mosquitto:1883
@@ -19,6 +20,8 @@ services:
   # Iot services
   mosquitto:
     image: eclipse-mosquitto
+    logging:
+      driver: "none"
     hostname: mosquitto
     container_name: mosquitto
     expose:
@@ -42,7 +45,7 @@ services:
       - node-network
     volumes:
       - ./mongo:/scripts
-    entrypoint: ['/scripts/setup.sh'] # Make sure this file exists (see below for the setup.sh)
+    entrypoint: ['/scripts/setup.sh'] # Make sure this file exists
     depends_on:
       - mongo1
       - mongo2
@@ -52,6 +55,8 @@ services:
     hostname: mongo1
     container_name: localmongo1
     image: mongo
+    logging:
+      driver: "none"
     expose:
       - 27017
     ports:
@@ -78,6 +83,8 @@ services:
     hostname: mongo2
     container_name: localmongo2
     image: mongo
+    logging:
+      driver: "none"
     expose:
       - 27017
     ports:
@@ -104,6 +111,8 @@ services:
     hostname: mongo3
     container_name: localmongo3
     image: mongo
+    logging:
+      driver: "none"
     expose:
       - 27017
     ports:
